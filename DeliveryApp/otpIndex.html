@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login OTP Page</title>
+    <link rel="stylesheet" href="otpStyle.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js">
+    </script>
+    <style>
+        #logout{
+            background-color: rgb(22, 22, 22);
+            color: rgb(240, 38, 31);
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="formLogin">
+        <!-- <img src="https://pbs.twimg.com/media/D8217lWV4AE6Ght.jpg" alt="image"> -->
+        <button id="logout" type="button" onclick="home()">Home</button>
+        <div id="login">
+            <h1>LOGIN</h1>
+            <label>UserName</label>
+            <input type="text" name="user" id="userName" placeholder="MobileNumber">
+            <label>Password</label>
+            <input type="password" name="pass" id="pass" placeholder="MobileNumber">
+            <button type="button" onclick="loginCheck()">Login</button>
+        </div>
+        <button id="logout" type="button" onclick="logout()">LOGOUT</button>
+    </div>
+
+    <div>
+
+    </div>
+    <script>
+
+        function loginCheck() {
+
+            let userName = document.getElementById('userName').value;
+            let password = document.getElementById('pass').value;
+            let endPoint = 'http://localhost:8080/authenticate2?userName=' + userName + '&password=' + password;
+
+            $.ajax({
+                url: endPoint,
+                type: 'Post',
+                cros: true,
+                contentType: "application/text",
+                success: function (token) {
+if(token==null){
+alert("Invalid Credentials")
+}
+else{
+    localStorage.setItem("AccessToken", token);
+                    let t = localStorage.getItem("AccessToken");
+                    console.log(t);
+                    alert("Login Sucessfully" );
+                    // window.location.reload();
+                    window.location = "http://127.0.0.1:5500/HTML/indexManoj.html/Swiggy/index.html";
+}
+
+                  
+                   
+    
+
+
+
+
+                }
+
+            });
+
+        }
+
+        function home() {
+            
+            let AccessToken="Manojkumar"+localStorage.getItem("AccessToken");
+            $.ajax({
+                url: 'http://localhost:8080/home?Authorization=' + AccessToken ,
+                type: 'POST',
+                contentType: "application/JSON",
+                success: function (result) {
+                    if (result === "Welcome To Our Community") {
+                        window.location = "http://127.0.0.1:5500/HTML/indexManoj.html/Swiggy/index.html";
+                    } else {
+                        alert("Invalid Header");
+                    }
+
+                }
+            })
+        }
+
+        function logout() {
+            let AccessToken="Manojkumar"+localStorage.getItem("AccessToken");
+            $.ajax({
+                url: 'http://localhost:8080/logoutt?Authorization=' + AccessToken ,
+                type: 'POST',
+                contentType: "application/JSON",
+                success: function (result) {
+                    if (result === "Success") {
+                        localStorage.removeItem("AccessToken");
+                        window.location.reload();
+                    } 
+                }
+            })
+        }
+
+    </script>
+</body>
+
+</html>
